@@ -14,18 +14,17 @@
 1.  **CRUD User**: Quản lý thông tin user với giao diện RichFaces (`users.xhtml`).
 2.  **REST API**: Cung cấp các endpoint tại `/api/users`.
 3.  **SOAP Service**: Demo một service SOAP đơn giản tại `/UserSoapService`.
+4.  **Spring Security**: Bảo mật API với Basic Auth (`user`/`user`).
+5.  **EJB Integration**: Demo Stateless Session Bean inject vào JSF Bean.
+6.  **Tooling**: Log4j logging, Lombok support.
+7.  **JBoss EAP 7 Ready**: Cấu hình `jboss-deployment-structure.xml` để tránh xung đột thư viện.
 
 ## Hướng dẫn cài đặt và chạy project (Run Instructions)
 
-### 1. Chuẩn bị Database
-- Đảm bảo PostgreSQL đã được cài đặt và đang chạy.
-- Tạo một database có tên là `postgres` (hoặc tên khác và cập nhật trong `src/main/resources/database.properties`).
-- Kiểm tra cấu hình kết nối trong [database.properties](file:///d:/Git/OldSpring4/src/main/resources/database.properties):
-  ```properties
-  jdbc.url=jdbc:postgresql://localhost:5432/postgres
-  jdbc.username=postgres
-  jdbc.password=postgres
-  ```
+### 1. Chuẩn bị Database và JBoss
+- Dự án sử dụng JNDI DataSource `java:jboss/datasources/PostgresDS` để kết nối PostgreSQL.
+- Bạn cần cài đặt JBoss EAP 7 (hoặc WildFly) và cấu hình Datasource.
+- Xem chi tiết hướng dẫn tại: [JBOSS_SETUP.md](file:///d:/Git/OldSpring4/JBOSS_SETUP.md).
 
 ### 2. Build Project
 Bạn cần cài đặt **JDK 8**. Nếu máy bạn đang để mặc định là Java 21, hãy mở terminal và set `JAVA_HOME` trỏ về JDK 8 trước khi build:

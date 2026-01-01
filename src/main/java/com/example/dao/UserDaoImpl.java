@@ -22,12 +22,12 @@ public class UserDaoImpl implements UserDao {
     public List<User> list() {
         return sessionFactory.getCurrentSession().createQuery("from User").list();
     }
-    
+
     @Override
     public User findById(Long id) {
         return sessionFactory.getCurrentSession().get(User.class, id);
     }
-    
+
     @Override
     public void delete(Long id) {
         User user = findById(id);

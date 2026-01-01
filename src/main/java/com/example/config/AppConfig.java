@@ -2,7 +2,6 @@ package com.example.config;
 
 import java.util.Properties;
 import javax.sql.DataSource;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +20,12 @@ import com.example.model.User;
 @Configuration
 @PropertySource("classpath:database.properties")
 @EnableTransactionManagement
-@ComponentScans(value = { 
+@ComponentScans(value = {
       @ComponentScan("com.example.dao"),
       @ComponentScan("com.example.service"),
       @ComponentScan("com.example.view")
-    })
+})
+@org.springframework.context.annotation.Import({ SecurityConfig.class })
 public class AppConfig {
 
    @Autowired
@@ -33,24 +33,28 @@ public class AppConfig {
 
    @Bean
    public DataSource getDataSource() {
-      BasicDataSource dataSource = new BasicDataSource();
-      dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-      dataSource.setUrl(env.getProperty("jdbc.url"));
-      dataSource.setUsername(env.getProperty("jdbc.username"));
-      dataSource.setPassword(env.getProperty("jdbc.password"));
-      return dataSource;
+      org.springframework.jndi.JndiObjectFactoryBean bean = new org.springframework.jndi.JndiObjectFactoryBean();
+      bean.setJndiName(env.getProperty("jndi.name"));
+      bean.setProxyInterface(DataSource.class);
+      bean.setLookupOnStartup(false);
+      try {
+         bean.afterPropertiesSet();
+      } catch (Exception e) {
+         throw new RuntimeException("Failed to lookup JNDI DataSource", e);
+      }
+      return (DataSource) bean.getObject();
    }
 
    @Bean
    public LocalSessionFactoryBean getSessionFactory() {
       LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
       factoryBean.setDataSource(getDataSource());
-      
+
       Properties props = new Properties();
       props.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
       props.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
       props.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-      
+
       factoryBean.setHibernateProperties(props);
       factoryBean.setAnnotatedClasses(User.class);
       return factoryBean;

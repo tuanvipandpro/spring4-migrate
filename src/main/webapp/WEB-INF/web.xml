@@ -6,6 +6,16 @@
 
     <display-name>OldSpring4</display-name>
 
+    <!-- Spring Security Filter -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- Spring Context Loader -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -17,6 +27,9 @@
     </context-param>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
     </listener>
 
     <!-- Spring MVC Dispatcher Servlet -->
@@ -54,5 +67,11 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/javax.faces.resource/*</url-pattern>
     </servlet-mapping>
+
+    <!-- Client-side State Saving to avoid ViewExpiredException on redeploy -->
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>client</param-value>
+    </context-param>
 
 </web-app>
