@@ -10,12 +10,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <spring.version>4.3.30.RELEASE</spring.version>
-    <hibernate.version>5.6.14.Final</hibernate.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+    <spring.version>6.1.14</spring.version>
+    <spring-boot.version>3.3.5</spring-boot.version>
+    <hibernate.version>6.4.10.Final</hibernate.version>
     <richfaces.version>4.5.17.Final</richfaces.version>
     <jsf.version>2.2.20</jsf.version>
+    <jakarta-faces.version>4.0.5</jakarta-faces.version>
   </properties>
 
   <dependencies>
@@ -153,5 +155,60 @@
 
   <build>
     <finalName>OldSpring4</finalName>
+    <plugins>
+      <!-- Maven Compiler Plugin - Update to Java 17 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <source>21</source>
+          <target>21</target>
+        </configuration>
+      </plugin>
+
+      <!-- OpenRewrite Maven Plugin -->
+      <plugin>
+        <groupId>org.openrewrite.maven</groupId>
+        <artifactId>rewrite-maven-plugin</artifactId>
+        <version>6.26.0</version>
+        <configuration>
+          <exportDatatables>true</exportDatatables>
+          <activeRecipes>
+            <recipe>org.openrewrite.java.migrate.UpgradeToJava21</recipe>
+            <!-- <recipe>org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_3</recipe> -->
+            <recipe>org.openrewrite.java.migrate.jakarta.JavaxMigrationToJakarta</recipe>
+            <recipe>org.openrewrite.hibernate.MigrateToHibernate61</recipe>
+            <recipe>org.openrewrite.java.logging.log4j.Log4j1ToLog4j2</recipe>
+          </activeRecipes>
+        </configuration>
+        <dependencies>
+          <!-- OpenRewrite Recipes for Spring -->
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-spring</artifactId>
+            <version>6.21.0</version>
+          </dependency>
+          <!-- OpenRewrite Recipes for Jakarta EE Migration -->
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-migrate-java</artifactId>
+            <version>3.24.0</version>
+          </dependency>
+          <!-- OpenRewrite Recipes for Hibernate -->
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-hibernate</artifactId>
+            <version>2.16.2</version>
+          </dependency>
+          <!-- OpenRewrite Recipes for Logging -->
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-logging-frameworks</artifactId>
+            <version>3.20.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
   </build>
 </project>
